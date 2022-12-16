@@ -78,6 +78,7 @@ class ParserModel(nn.Module):
         self.hidden_to_logits_weight = nn.Parameter(nn.init.xavier_uniform_(torch.zeros(self.hidden_size, self.n_classes)))
         self.hidden_to_logits_bias = nn.Parameter(nn.init.uniform_(torch.zeros(self.n_classes)))
         self.dropout = nn.Dropout(self.dropout_prob)
+        self.relu = nn.ReLU()
 
         ### END YOUR CODE
 
@@ -150,7 +151,8 @@ class ParserModel(nn.Module):
         x = self.embedding_lookup(w) # Embedding lookup
         x_flat = x.view(-1, self.embed_size * self.n_features) # Flatten
         h = x_flat @ self.embed_to_hidden_weight + self.embed_to_hidden_bias # Hidden layer
-        h_dropped = self.dropout(h) # Dropout
+        h_relu = self.relu(h)
+        h_dropped = self.dropout(h_relu) # Dropout
         logits = h_dropped @ self.hidden_to_logits_weight + self.hidden_to_logits_bias # Logits for return
 
         ### END YOUR CODE

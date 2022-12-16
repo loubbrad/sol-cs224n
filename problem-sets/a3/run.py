@@ -151,7 +151,7 @@ if __name__ == "__main__":
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    train(parser, train_data, dev_data, output_path, batch_size=1024, n_epochs=50, lr=0.001)
+    train(parser, train_data, dev_data, output_path, batch_size=1024, n_epochs=10, lr=0.0005)
 
     if not debug:
         print(80 * "=")
