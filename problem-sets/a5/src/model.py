@@ -27,8 +27,12 @@ class GPTConfig:
     def __init__(self, vocab_size, block_size, **kwargs):
         self.vocab_size = vocab_size
         self.block_size = block_size
+        self.attn_type = 'causal'
         for k,v in kwargs.items():
             setattr(self, k, v)
+            
+    def set_attn(self, attn_type):
+        self.attn_type = attn_type
 
 class GPT1Config(GPTConfig):
     """ GPT-1 like network roughly 125M params """
@@ -43,10 +47,12 @@ class Block(nn.Module):
         super().__init__()
         self.ln1 = nn.LayerNorm(config.n_embd)
         self.ln2 = nn.LayerNorm(config.n_embd)
-        if config.additive:
-            self.attn = attention.AdditiveSelfAttention(config)
+        if config.attn_type == 'synth':
+            self.attn = attention.SynthesizerAttention(config)
+            print('Using synth attention')
         else:
             self.attn = attention.CausalSelfAttention(config)
+            print('Using causal attention')
         self.mlp = nn.Sequential(
             nn.Linear(config.n_embd, 4 * config.n_embd),
             nn.GELU(),

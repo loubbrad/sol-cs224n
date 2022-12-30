@@ -50,6 +50,7 @@ class Trainer:
         self.device = 'cpu'
         if torch.cuda.is_available():
             self.device = torch.cuda.current_device()
+            print(f'Using CUDA device: {torch.cuda.get_device_name(self.device)}')
             self.model = torch.nn.DataParallel(self.model).to(self.device)
 
     def save_checkpoint(self):
